@@ -23,9 +23,9 @@ pipeline {
                 }
             }
             post {
-                script {
-                    if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop') {
-                        success {
+                success {
+                    script {
+                        if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop') {
                             junit '**/target/surefire-reports/TEST-*.xml'
                             archiveArtifacts 'target/*.jar'
                         }
