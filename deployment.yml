@@ -7,7 +7,6 @@ spec:
   selector:
     matchLabels:
       app: helloworld-app
-      version: blue
   template:
     metadata:
       name: helloworld-blue-pod
