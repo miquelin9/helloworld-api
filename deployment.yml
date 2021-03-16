@@ -12,7 +12,7 @@ spec:
       name: helloworld-blue-pod
       labels:
         app: helloworld-app
-        version: blue
+        version: green
     spec:
       containers:
         - name: helloworld-container
