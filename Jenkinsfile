@@ -19,7 +19,7 @@ pipeline {
 
                 // Run Maven on a Unix agent.
                 withSonarQubeEnv('SonarQube') {
-                    sh "mvn -Dmaven.test.failure.ignore=true clean install compile sonar:sonar"
+                    sh "mvn -Dmaven.test.failure.ignore=true clean install package sonar:sonar"
                 }
             }
         }
