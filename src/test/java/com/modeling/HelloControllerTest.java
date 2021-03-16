@@ -15,7 +15,7 @@ public class HelloControllerTest {
                 .when().get("/hello")
                 .then()
                 .statusCode(200)
-                .body(is("Hello World, i'm the change n4!"));
+                .body(is("Hello World, i'm the change number 0!"));
     }
 
 }

@@ -22,27 +22,21 @@ pipeline {
                     sh "mvn -Dmaven.test.failure.ignore=true clean install package sonar:sonar"
                 }
             }
-        }
 
-        stage("Quality Gate") {
-            steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
-                }
-            }
-        }
-
-        stage('Test') {
-            steps {
-                // Run Maven on a Unix agent.
-                sh "mvn -Dmaven.test.failure.ignore=true test"
-            }
             post {
                 // If Maven was able to run the tests, even if some of the test
                 // failed, record the test results and archive the jar file.
                 success {
                     junit '**/target/surefire-reports/TEST-*.xml'
                     archiveArtifacts 'target/*.jar'
+                }
+            }
+        }
+
+        stage("Quality Gate") {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
