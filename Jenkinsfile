@@ -12,13 +12,15 @@ pipeline {
     stages {
         stage('Build & SonarQube analysis') {
             steps {
-                // Get some code from a GitHub repository
-                    echo env.BRANCH_NAME
-
-                // Run Maven on a Unix agent.
-                withSonarQubeEnv('SonarQube') {
-                    sh "mvn -Dmaven.test.failure.ignore=true clean package sonar:sonar"
+                script {
+                    if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop') {
+                        withSonarQubeEnv('SonarQube') {
+                            sh "mvn -Dmaven.test.failure.ignore=true clean package sonar:sonar"
+                        }
+                    }
                 }
+
+                //
             }
 
             post {
