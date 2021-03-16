@@ -23,9 +23,13 @@ pipeline {
                 }
             }
             post {
-                success {
-                    junit '**/target/surefire-reports/TEST-*.xml'
-                    archiveArtifacts 'target/*.jar'
+                script {
+                    if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop') {
+                        success {
+                            junit '**/target/surefire-reports/TEST-*.xml'
+                            archiveArtifacts 'target/*.jar'
+                        }
+                    }
                 }
             }
         }
