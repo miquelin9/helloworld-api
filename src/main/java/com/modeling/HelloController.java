@@ -11,6 +11,6 @@ public class HelloController {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String hello() {
-        return "Hello World!";
+        return "Hello World, i'm the change!";
     }
 }
