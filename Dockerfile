@@ -2,7 +2,7 @@ FROM openjdk:16-ea-14-alpine
 
 WORKDIR /
 
-COPY /target/core-1.0-SNAPSHOT-runner.jar /home/demo.jar
+COPY /target/helloworld-api-1.0-SNAPSHOT-runner.jar /home/demo.jar
 
 EXPOSE 9090
 
