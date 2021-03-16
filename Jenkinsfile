@@ -13,9 +13,9 @@ pipeline {
         stage('Build & SonarQube analysis') {
             steps {
                 // Get some code from a GitHub repository
-                git branch: 'main',
+                git branch: 'master',
                 credentialsId: 'github',
-                url: 'https://github.com/miquelin9/modeling-java.git'
+                url: 'https://github.com/miquelin9/helloworld-api.git'
 
                 // Run Maven on a Unix agent.
                 withSonarQubeEnv('SonarQube') {
