@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helloworld-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: helloworld-app
+      version: blue
+  template:
+    metadata:
+      name: helloworld-blue-pod
+      labels:
+        app: helloworld-app
+        version: blue
+    spec:
+      containers:
+        - name: helloworld-container
+          image: mjordalopez/modeling-java:latest
+          ports:
+            - containerPort: 9090
