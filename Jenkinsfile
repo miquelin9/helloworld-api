@@ -10,12 +10,23 @@ pipeline {
     }
 
     stages {
+        stage('Unit Test') {
+            steps {
+                 sh "mvn -Dtest=HelloControllerTest test"
+            }
+            post {
+                success {
+                    junit '**/target/surefire-reports/TEST-*.xml'
+                }
+            }
+        }
+
         stage('Build & SonarQube analysis') {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop') {
                         withSonarQubeEnv('SonarQube') {
-                            sh "mvn -Dmaven.test.failure.ignore=true clean package sonar:sonar"
+                            sh "mvn -Dmaven.test.failure.ignore=true -Dtest=HelloControllerTest clean package sonar:sonar"
                         }
                     } else {
                         echo "Current branch " + env.BRANCH_NAME + " won't run this step"
@@ -72,7 +83,7 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'master') {
-                        echo "Acceptance Tests"
+                        sh "mvn -Dtest=HelloControllerTestIT test"
                     } else {
                         echo "Current branch " + env.BRANCH_NAME + " won't run this step"
                     }
