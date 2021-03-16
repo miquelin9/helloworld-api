@@ -17,15 +17,12 @@ pipeline {
                         withSonarQubeEnv('SonarQube') {
                             sh "mvn -Dmaven.test.failure.ignore=true clean package sonar:sonar"
                         }
+                    } else {
+                        echo "Current branch " + env.BRANCH_NAME + " won't run this step"
                     }
                 }
-
-                //
             }
-
             post {
-                // If Maven was able to run the tests, even if some of the test
-                // failed, record the test results and archive the jar file.
                 success {
                     junit '**/target/surefire-reports/TEST-*.xml'
                     archiveArtifacts 'target/*.jar'
@@ -35,8 +32,14 @@ pipeline {
 
         stage("Quality Gate") {
             steps {
-                timeout(time: 5, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true
+                script {
+                    if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME == 'develop') {
+                        timeout(time: 5, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: true
+                        }
+                    } else {
+                        echo "Current branch " + env.BRANCH_NAME + " won't run this step"
+                    }
                 }
             }
         }
@@ -48,10 +51,26 @@ pipeline {
 
             steps{
                 script {
-                    def appimage = docker.build registry
-                    docker.withRegistry( '', registryCredential ) {
-                        appimage.push()
-                        appimage.push('latest')
+                    if (env.BRANCH_NAME == 'master') {
+                        def appimage = docker.build registry
+                        docker.withRegistry( '', registryCredential ) {
+                            appimage.push()
+                            appimage.push('latest')
+                        }
+                    } else {
+                        echo "Current branch " + env.BRANCH_NAME + " won't run this step"
+                    }
+                }
+            }
+        }
+
+        stage('Acceptance Tests') {
+            steps {
+                script {
+                    if (env.BRANCH_NAME == 'master') {
+                        echo "Acceptance Tests"
+                    } else {
+                        echo "Current branch " + env.BRANCH_NAME + " won't run this step"
                     }
                 }
             }
@@ -59,8 +78,14 @@ pipeline {
 
         stage('Deploy') {
             steps {
-                sh "kubectl apply -f deployment.yml"
-                sh "kubectl apply -f service.yml"
+                script {
+                    if (env.BRANCH_NAME == 'master') {
+                        sh "kubectl apply -f deployment.yml"
+                        sh "kubectl apply -f service.yml"
+                    } else {
+                       echo "Current branch " + env.BRANCH_NAME + " won't run this step"
+                    }
+                }
             }
         }
     }
